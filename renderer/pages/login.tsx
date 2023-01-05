@@ -33,6 +33,8 @@ export default function Login() {
                         displayName: data.user.displayName,
                         uid: data.user.uid,
                     });
+                    localStorage.setItem("uid", data.user.uid);
+                    localStorage.setItem("displayName", data.user.displayName);
                 }
             );
         } catch (error) {
@@ -43,7 +45,12 @@ export default function Login() {
     };
     const signIn = async () => {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            await signInWithEmailAndPassword(auth, email, password).then(
+                (data) => {
+                    localStorage.setItem("uid", data.user.uid);
+                    localStorage.setItem("displayName", data.user.displayName);
+                }
+            );
         } catch (error) {
             ipcRenderer.invoke(
                 "showError",

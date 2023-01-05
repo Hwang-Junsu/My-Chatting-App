@@ -3,6 +3,7 @@ import {Dispatch, SetStateAction} from "react";
 export interface IUser {
     displayName: string;
     uid: string;
+    email: string;
     profile?: string;
 }
 

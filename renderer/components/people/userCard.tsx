@@ -11,6 +11,7 @@ export default function UserCard({
     const onClick = () => {
         setIsOpen((props) => !props);
     };
+    console.log(user);
     return (
         <div
             className={cls(
@@ -23,7 +24,7 @@ export default function UserCard({
                 className="hover:cursor-pointer flex space-x-3 items-center p-3 hover:bg-blue-300"
             >
                 <div className="w-10 h-10 rounded-full bg-gray-400" />
-                <div>{user.displayName}</div>
+                <div>{user?.displayName}</div>
             </div>
             {type === "USER" ? (
                 <>
