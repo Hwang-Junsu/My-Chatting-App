@@ -1,4 +1,15 @@
+import {onAuthStateChanged} from "firebase/auth";
+import {
+    addDoc,
+    collection,
+    doc,
+    getDocs,
+    query,
+    setDoc,
+    where,
+} from "firebase/firestore";
 import {useState} from "react";
+import {auth, db} from "../../firebase";
 import {IListItemProps} from "../../types/chat";
 import {cls} from "../../utils/cls";
 
@@ -11,7 +22,29 @@ export default function UserCard({
     const onClick = () => {
         setIsOpen((props) => !props);
     };
-    console.log(user);
+
+    const handleChatting = () => {
+        onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser) {
+                const chatroomRef = collection(db, "chatroom");
+                const userData = {
+                    uid: currentUser.uid,
+                    displayName: currentUser.displayName,
+                    email: currentUser.email,
+                };
+
+                const response = await getDocs(collection(db, "chatroom"));
+                console.log(
+                    response.forEach((data) => console.log(data.data()))
+                );
+
+                await setDoc(doc(chatroomRef), {
+                    members: [userData, user],
+                    messages: [],
+                });
+            }
+        });
+    };
     return (
         <div
             className={cls(
@@ -29,7 +62,10 @@ export default function UserCard({
             {type === "USER" ? (
                 <>
                     {isOpen ? (
-                        <div className="absolute right-2 bottom-5 cursor-pointer">
+                        <div
+                            onClick={handleChatting}
+                            className="absolute right-2 bottom-5 cursor-pointer"
+                        >
                             <div className="w-20 h-6 bg-blue-200 text-sm text-center rounded-md">
                                 1:1 채팅하기
                             </div>

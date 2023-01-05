@@ -7,7 +7,7 @@ import {
     signInWithEmailAndPassword,
     updateProfile,
 } from "firebase/auth";
-import {collection, addDoc, setDoc, doc} from "firebase/firestore";
+import {setDoc, doc} from "firebase/firestore";
 import {auth as getAuth, db} from "../firebase";
 import {useRouter} from "next/router";
 import {ipcRenderer} from "electron";
