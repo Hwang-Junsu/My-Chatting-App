@@ -1,13 +1,6 @@
 import { onAuthStateChanged } from "firebase/auth";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { auth, db } from "../../firebase";
 import { IListItemProps } from "../../types/chat";
@@ -19,6 +12,7 @@ export default function UserCard({
   type = "USER",
 }: IListItemProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const router = useRouter();
   const onClick = () => {
     setIsOpen((props) => !props);
   };
@@ -26,18 +20,31 @@ export default function UserCard({
   const handleChatting = () => {
     onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        const chatroomRef = collection(db, "chatroom");
+        const chatroomRef = collection(db, "chatrooms");
         const userData = {
           uid: currentUser.uid,
           displayName: currentUser.displayName,
           email: currentUser.email,
         };
 
-        const response = await setDoc(doc(chatroomRef), {
-          members: [userData, user],
+        const { id } = await addDoc(chatroomRef, {
+          chatRoomName: `${user.displayName},${currentUser.displayName}`,
+          members: [user, userData],
+          type: "ONE",
         });
 
-        console.log(response);
+        const membersRef = collection(db, `members-${id}`);
+        const messagesRef = collection(db, `messages-${id}`);
+        await addDoc(membersRef, {
+          members: [user, userData],
+        });
+        await addDoc(messagesRef, {
+          message: "",
+          createdAt: "",
+          displayName: "",
+        });
+
+        router.push(`/chat/${id}`);
       }
     });
   };

@@ -39,9 +39,10 @@ export default function Home() {
           <section>
             <div className="font-bold text-lg">People</div>
             <div className=" divide-y-2">
-              {userList.map((user) => (
-                <UserCard key={user.id} user={user} />
-              ))}
+              {userList.map((user) => {
+                if (user.uid === currentUser.uid) return;
+                return <UserCard key={user.uid} user={user} />;
+              })}
             </div>
           </section>
         </div>
