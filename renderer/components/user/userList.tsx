@@ -4,16 +4,18 @@ import Modal from "../modal";
 import { v4 as uuid } from "uuid";
 import UserCard from "./userCard";
 import useUserList from "../../hooks/useUserList";
-import { IUser } from "../../types/chat";
 import Button from "../button";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { useRecoilValue } from "recoil";
 import userState from "../../atoms/user";
+import { IUser } from "../../types/user";
+import { useRouter } from "next/router";
 
 export default function UserList({ isOpen, setIsOpen }: IModalProps) {
   const { userList } = useUserList();
+  const router = useRouter();
   const currentUser = useRecoilValue(userState);
   const [addList, setAddList] = useState<IUser[]>([]);
   const handleDelete = (selectedUser) => {
@@ -35,8 +37,10 @@ export default function UserList({ isOpen, setIsOpen }: IModalProps) {
           email: currentUser.email,
         };
 
-        const chatRoomNameString = currentUser.displayName + ",";
-        addList.map((user) => user.displayName).join(",");
+        const chatRoomNameString =
+          currentUser.displayName +
+          "," +
+          addList.map((user) => user.displayName).join(",");
 
         const { id } = await addDoc(chatroomRef, {
           chatRoomName: chatRoomNameString,
@@ -46,14 +50,12 @@ export default function UserList({ isOpen, setIsOpen }: IModalProps) {
 
         const membersRef = collection(db, `members-${id}`);
         const messagesRef = collection(db, `messages-${id}`);
-        await addDoc(membersRef, {
-          members: [...addList, userData],
-        });
         await addDoc(messagesRef, {
           message: "",
           createdAt: "",
           displayName: "",
         });
+        router.push(`/chat/${id}`);
       }
     });
   };
@@ -61,7 +63,7 @@ export default function UserList({ isOpen, setIsOpen }: IModalProps) {
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <div className=" tracking-tighter font-bold text-center mb-2">
-        채팅 유저 추가하기
+        그룹채팅 만들기
       </div>
       <section className="border-t-2 divide-y-2 h-[350px] overflow-auto scrollbar-none pb-2">
         {userList.map((user) => {

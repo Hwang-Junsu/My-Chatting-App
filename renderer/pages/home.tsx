@@ -3,7 +3,7 @@ import Head from "next/head";
 import { auth as getAuth } from "../firebase";
 import Layout from "../components/layout";
 import { useRouter } from "next/router";
-import UserCard from "../components/people/userCard";
+import UserCard from "../components/user/userCard";
 import useUserList from "../hooks/useUserList";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRecoilValue } from "recoil";

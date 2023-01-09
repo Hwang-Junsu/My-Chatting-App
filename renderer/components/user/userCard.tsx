@@ -35,9 +35,6 @@ export default function UserCard({
 
         const membersRef = collection(db, `members-${id}`);
         const messagesRef = collection(db, `messages-${id}`);
-        await addDoc(membersRef, {
-          members: [user, userData],
-        });
         await addDoc(messagesRef, {
           message: "",
           createdAt: "",
