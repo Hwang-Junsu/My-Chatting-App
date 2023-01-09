@@ -7,6 +7,9 @@ import {
   collection,
   DocumentData,
   getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -22,22 +25,32 @@ export default function Chatting() {
   const { displayName, email, uid } = useRecoilValue(userState);
 
   useEffect(() => {
-    async function getChatList() {
-      const chatroomsRef = await getDocs(
-        query(
-          collection(db, "chatrooms"),
-          where("members", "array-contains", {
-            displayName,
-            email,
-            uid,
-          })
-        )
+    const chatroomRef = query(
+      collection(db, "chatrooms"),
+      where("members", "array-contains", { displayName, email, uid }),
+      orderBy("lastTimeStamp", "asc")
+    );
+    onSnapshot(chatroomRef, (querySnapshot) => {
+      setChatroomList(
+        querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
       );
-      chatroomsRef.forEach((doc) => {
-        setChatroomList((props) => [...props, { id: doc.id, ...doc.data() }]);
-      });
-    }
-    getChatList();
+    });
+    // async function getChatList() {
+    //   const chatroomsRef = await getDocs(
+    //     query(
+    //       collection(db, "chatrooms"),
+    //       where("members", "array-contains", {
+    //         displayName,
+    //         email,
+    //         uid,
+    //       })
+    //     )
+    //   );
+    //   chatroomsRef.forEach((doc) => {
+    //     setChatroomList((props) => [...props, { id: doc.id, ...doc.data() }]);
+    //   });
+    // }
+    // getChatList();
   }, []);
   return (
     <>

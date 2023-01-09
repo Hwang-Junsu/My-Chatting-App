@@ -18,7 +18,7 @@ export default function Chatting() {
   const currentUser = useRecoilValue<IUserState>(userState);
   useEffect(() => {
     async function getChatroomData() {
-      const docRef = doc(db, "chatrooms", router.query.id as string);
+      const docRef = doc(db, "chatrooms", String(router.query.id));
       const chatroomInfo = await getDoc(docRef);
 
       if (chatroomInfo.exists()) {

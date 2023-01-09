@@ -46,6 +46,8 @@ export default function UserCard({
         const { id } = await addDoc(chatroomRef, {
           chatRoomName: `${user.displayName},${currentUser.displayName}`,
           members: [user, userData],
+          lastMessage: "",
+          lastTimeStamp: Date.now(),
           type: "ONE",
         });
 

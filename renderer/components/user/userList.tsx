@@ -61,6 +61,8 @@ export default function UserList({ isOpen, setIsOpen }: IModalProps) {
         const { id } = await addDoc(chatroomRef, {
           chatRoomName: chatRoomNameString,
           members: [...addList, userData],
+          lastMessage: "",
+          lastTimeStamp: Date.now(),
           type: "MULTIPLE",
           host: userData,
         });

@@ -1,4 +1,4 @@
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { db } from "../../firebase";
 import { IUserState } from "../../types/user";
@@ -20,6 +20,10 @@ export default function ChatInput({
       uid: currentUser.uid,
       message: chatMessage,
       createdAt: Date.now(),
+    });
+    await updateDoc(doc(db, "chatrooms", chatroomId), {
+      lastMessage: chatMessage,
+      lastTimeStamp: Date.now(),
     });
     setChatMessage("");
     const chatting = document.getElementById("chatting");
