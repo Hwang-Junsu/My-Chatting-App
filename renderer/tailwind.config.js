@@ -14,7 +14,11 @@ module.exports = {
       orange: colors.orange,
       red: colors.red,
     },
-    extend: {},
+    extend: {
+      fontFamily: {
+        gothic: ["MICEGothic Bold"],
+      },
+    },
   },
   plugins: [require("tailwind-scrollbar")],
 };

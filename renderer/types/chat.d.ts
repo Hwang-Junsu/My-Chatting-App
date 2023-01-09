@@ -1,3 +1,5 @@
+import { DocumentData } from "firebase/firestore";
+import { IUser } from "./user.d";
 import { Dispatch, SetStateAction } from "react";
 
 export interface IListItemProps {
@@ -12,10 +14,16 @@ export interface IListItemProps {
   onClick?: () => void;
 }
 
-export interface IChatRoomCard {
-  chatroomName: string;
-  type: string;
-  members?: number;
+export interface IChatRoom {
+  chatRoomName: string;
+  host?: IUser;
+  lastMessage: string;
+  lastTimeStamp: number;
+  members: IUser[];
+  type: "ONE" | "MULTIPLE";
+}
+
+export interface IChatRoomCard extends IChatRoom {
   onClick: () => void;
 }
 

@@ -31,14 +31,14 @@ export default function Home() {
         <title>My Chatting APP | Home</title>
       </Head>
       <Layout text="People">
-        <div className="p-5">
-          <section className="space-y-2 border-b-2 mb-2">
-            <div className="font-bold text-lg">My Profile</div>
+        <div className="h-screen p-5">
+          <section className="mb-2 space-y-2 border-b-2">
+            <div className="text-lg font-bold">My Profile</div>
             <UserCard user={currentUser} />
           </section>
-          <section>
-            <div className="font-bold text-lg">People</div>
-            <div className=" divide-y-2">
+          <section className="">
+            <div className="text-lg font-bold">People</div>
+            <div className="divide-y-2 ">
               {userList.map((user) => {
                 if (user.uid === currentUser.uid) return;
                 return <UserCard key={user.uid} user={user} />;

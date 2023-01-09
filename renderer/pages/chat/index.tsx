@@ -1,70 +1,59 @@
 import { useEffect, useState } from "react";
-import ListItem from "../../components/chatlist/item";
 import UserList from "../../components/user/userList";
 import Layout from "../../components/layout";
-import { db } from "../../firebase";
+import { auth, db } from "../../firebase";
 import {
   collection,
   DocumentData,
-  getDocs,
-  limit,
   onSnapshot,
   orderBy,
   query,
   where,
 } from "firebase/firestore";
 import { useRouter } from "next/router";
-import { useRecoilValue } from "recoil";
-import userState from "../../atoms/user";
 import ChatroomCard from "../../components/chatlist/chatroomCard";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function Chatting() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [chatroomList, setChatroomList] = useState<DocumentData[]>([]);
   const router = useRouter();
-  const { displayName, email, uid } = useRecoilValue(userState);
 
   useEffect(() => {
-    const chatroomRef = query(
-      collection(db, "chatrooms"),
-      where("members", "array-contains", { displayName, email, uid }),
-      orderBy("lastTimeStamp", "asc")
-    );
-    onSnapshot(chatroomRef, (querySnapshot) => {
-      setChatroomList(
-        querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-      );
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const chatroomRef = query(
+          collection(db, "chatrooms"),
+          orderBy("lastTimeStamp", "desc"),
+          where("members", "array-contains", {
+            displayName: user.displayName,
+            email: user.email,
+            uid: user.uid,
+          })
+        );
+        onSnapshot(chatroomRef, (querySnapshot) => {
+          setChatroomList(
+            querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+          );
+        });
+      }
     });
-    // async function getChatList() {
-    //   const chatroomsRef = await getDocs(
-    //     query(
-    //       collection(db, "chatrooms"),
-    //       where("members", "array-contains", {
-    //         displayName,
-    //         email,
-    //         uid,
-    //       })
-    //     )
-    //   );
-    //   chatroomsRef.forEach((doc) => {
-    //     setChatroomList((props) => [...props, { id: doc.id, ...doc.data() }]);
-    //   });
-    // }
-    // getChatList();
   }, []);
   return (
     <>
       <Layout text="Chat">
-        <div className="p-5">
+        <div className="p-5 ">
           <section>
             <div className="mb-2 text-lg font-bold">Chat Rooms</div>
             <div className="divide-y-2 ">
               {chatroomList.map((chatroom) => (
                 <ChatroomCard
                   key={chatroom.id}
-                  chatroomName={chatroom.chatRoomName}
+                  chatRoomName={chatroom.chatRoomName}
+                  lastMessage={chatroom.lastMessage}
+                  lastTimeStamp={chatroom.lastTimeStamp}
+                  members={chatroom.members}
                   type={chatroom.type}
-                  members={chatroom.members.length}
                   onClick={() => router.push(`/chat/${chatroom.id}`)}
                 />
               ))}

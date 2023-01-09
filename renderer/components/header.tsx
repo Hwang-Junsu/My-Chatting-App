@@ -9,7 +9,7 @@ export default function Header({
 }: IHeaderProps) {
   const router = useRouter();
   return (
-    <div className="fixed inset-x-0 top-0 h-16 p-2 bg-blue-400 border-b-2">
+    <div className="fixed inset-x-0 top-0 z-50 h-16 p-2 bg-blue-400 border-b-2">
       <div className="flex items-center justify-between h-full px-5">
         <div className="flex w-4/5">
           {canGoBack ? (
