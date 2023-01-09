@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import { IUserState } from "../../types/user";
 import Message from "./message";
+import { v4 as uuid } from "uuid";
 import { useEffect, useState } from "react";
 
 export default function ChatLog({
@@ -19,6 +20,13 @@ export default function ChatLog({
   currentUser: IUserState;
 }) {
   const [messages, setMessages] = useState<DocumentData[]>([]);
+
+  useEffect(() => {
+    const chatting = document.getElementById("chatting");
+    setTimeout(() => {
+      chatting.scrollTop = chatting.scrollHeight;
+    }, 100);
+  }, []);
   useEffect(() => {
     const messagesRef = query(
       collection(db, `messages-${chatroomId}`),
@@ -39,6 +47,7 @@ export default function ChatLog({
         if (message.message === "") return;
         return (
           <Message
+            key={uuid()}
             message={message.message}
             displayName={message.displayName}
             createdAt={message.createdAt}

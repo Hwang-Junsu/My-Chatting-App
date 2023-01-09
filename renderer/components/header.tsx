@@ -1,24 +1,19 @@
 import { useRouter } from "next/router";
-import { useRecoilValue } from "recoil";
-import userState from "../atoms/user";
+import { IHeaderProps } from "../types/common";
 
 export default function Header({
   text,
   canGoBack,
   headerText = true,
-}: {
-  text: string;
-  canGoBack?: boolean;
-  headerText?: boolean;
-}) {
-  const currentUser = useRecoilValue(userState);
+  onClick,
+}: IHeaderProps) {
   const router = useRouter();
   return (
-    <div className="h-16 border-b-2 bg-blue-400 fixed top-0 inset-x-0 p-2">
-      <div className="flex items-center h-full justify-between px-5">
-        <div className="flex">
+    <div className="fixed inset-x-0 top-0 h-16 p-2 bg-blue-400 border-b-2">
+      <div className="flex items-center justify-between h-full px-5">
+        <div className="flex w-4/5">
           {canGoBack ? (
-            <span className="mr-2" onClick={() => router.back()}>
+            <span className="mr-2 cursor-pointer" onClick={() => router.back()}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -35,13 +30,12 @@ export default function Header({
               </svg>
             </span>
           ) : null}
-          <p className="tracking-tighter font-bold w-full truncate">{text}</p>
+          <p className="w-full font-bold tracking-tighter truncate">{text}</p>
         </div>
         {headerText ? (
-          <p className=" tracking-tighter text-sm">{`${currentUser.displayName}
-        님 안녕하세요`}</p>
+          <p className="text-sm tracking-tighter whitespace-nowrap " />
         ) : (
-          <div>
+          <div className="cursor-pointer" onClick={onClick}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

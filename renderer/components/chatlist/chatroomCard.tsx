@@ -12,18 +12,20 @@ export default function ChatroomCard({
   return (
     <div
       onClick={onClick}
-      className="flex items-center p-3 space-x-3 hover:cursor-pointer hover:bg-blue-300"
+      className="flex items-center justify-between p-3 space-x-3 hover:cursor-pointer hover:bg-blue-300"
     >
-      <div>
-        <div className="w-10 h-10 bg-gray-400 rounded-full" />
-      </div>
-      <div className="truncate ">
-        {type === "ONE"
-          ? chatroomName
-              .split(",")
-              .filter((name) => name !== currentUser.displayName)
-              .join()
-          : chatroomName}
+      <div className="flex items-center space-x-2 truncate">
+        <div>
+          <div className="w-10 h-10 bg-gray-400 rounded-full" />
+        </div>
+        <div className="truncate">
+          {type === "ONE"
+            ? chatroomName
+                .split(",")
+                .filter((name) => name !== currentUser.displayName)
+                .join()
+            : chatroomName}
+        </div>
       </div>
       {type === "MULTIPLE" ? (
         <div className="flex items-center justify-center px-2 py-1 bg-blue-300 rounded-md">

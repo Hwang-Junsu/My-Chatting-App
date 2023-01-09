@@ -1,10 +1,18 @@
-export interface IRootModalProps {
-    isOpen: boolean;
-    setIsOpen: Dispatch<SetStateAction<boolean>>;
-    children: React.ReactNode;
+export interface IHeaderProps {
+  text: string;
+  canGoBack?: boolean;
+  headerText?: boolean;
+  onClick?: () => void;
 }
 
-export interface IModalProps {
-    isOpen: boolean;
-    setIsOpen: Dispatch<SetStateAction<boolean>>;
+export interface ILayoutProps extends IHeaderProps {
+  children: React.ReactNode;
+  hasTabBar?: boolean;
+}
+
+export interface IButtonProps {
+  large?: boolean;
+  text: string;
+  type?: "submit" | "button" | "reset";
+  [key: string]: any;
 }

@@ -28,7 +28,7 @@ export default function Message({
           {message}
         </div>
       </div>
-      <div className="pt-5 whitespace-nowrap">
+      <div className="pt-2 whitespace-nowrap">
         <div className="text-[10px] text-gray-800">
           {new Date(createdAt).toLocaleDateString("ko-KR")}
         </div>

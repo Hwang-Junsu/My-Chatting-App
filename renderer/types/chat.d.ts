@@ -6,7 +6,8 @@ export interface IListItemProps {
   isOpen?: boolean;
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
   profile?: string;
-  type?: "ADD" | "USER";
+  isHost?: boolean;
+  type?: "ADD" | "USER" | "READONLY";
   handleAdd?: (user: IUser) => void;
   onClick?: () => void;
 }

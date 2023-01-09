@@ -44,8 +44,8 @@ export default function Chatting() {
       <Layout text="Chat">
         <div className="p-5">
           <section>
-            <div className="font-bold text-lg mb-2">Chatting</div>
-            <div className=" divide-y-2">
+            <div className="mb-2 text-lg font-bold">Chat Rooms</div>
+            <div className="divide-y-2 ">
               {chatroomList.map((chatroom) => (
                 <ChatroomCard
                   key={chatroom.id}

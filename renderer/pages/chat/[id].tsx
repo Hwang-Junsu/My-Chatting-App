@@ -8,10 +8,12 @@ import userState from "../../atoms/user";
 import ChatLog from "../../components/chat/chatLog";
 import ChatInput from "../../components/chat/chatInput";
 import { IUserState } from "../../types/user";
+import UserListModal from "../../components/chat/userListModal";
 
 export default function Chatting() {
   const [chatroom, setChatroom] = useState<DocumentData>();
   const [roomName, setRoomName] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const router = useRouter();
   const currentUser = useRecoilValue<IUserState>(userState);
   useEffect(() => {
@@ -37,10 +39,16 @@ export default function Chatting() {
       }
     }
     getChatroomData();
-  }, []);
+  }, [chatroom]);
   return (
     <>
-      <Layout text={roomName} hasTabBar canGoBack headerText={false}>
+      <Layout
+        text={roomName}
+        hasTabBar
+        canGoBack
+        headerText={chatroom?.type === "ONE" ? true : false}
+        onClick={() => setIsOpen((props) => !props)}
+      >
         <div className="p-5 overflow-auto pb-28 scrollbar-none">
           <ChatLog
             chatroomId={String(router.query.id)}
@@ -52,6 +60,14 @@ export default function Chatting() {
           currentUser={currentUser}
         />
       </Layout>
+      {isOpen ? (
+        <UserListModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          members={chatroom.members}
+          hostId={chatroom.host.uid}
+        />
+      ) : null}
     </>
   );
 }
