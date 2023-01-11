@@ -13,7 +13,7 @@ export default function UserEditModal({ isOpen, setIsOpen }: IModalProps) {
   const [nickName, setNickname] = useState<string>("");
   const [stateMessage, setStateMessage] = useState<string>("");
 
-  const handleEdit = async (e) => {
+  const handleEdit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (

@@ -6,7 +6,7 @@ import Layout from "@components/common/layout";
 
 export default function Setting() {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const logOut = () => {
     auth.signOut();
     router.replace("/login");

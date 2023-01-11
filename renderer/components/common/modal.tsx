@@ -8,7 +8,7 @@ export default function Modal({
   height = 500,
 }: IRootModalProps) {
   const onClick = () => {
-    setIsOpen((props) => !props);
+    setIsOpen((props: boolean) => !props);
   };
 
   return (

@@ -7,6 +7,7 @@ import ChatInput from "@components/chat/chatInput";
 import UserListModal from "@components/chat/userListModal";
 import Layout from "@components/common/layout";
 import useUser from "@hooks/useUser";
+import { IUser } from "types/user";
 
 export default function Chatting() {
   const [chatroom, setChatroom] = useState<DocumentData>();
@@ -26,14 +27,12 @@ export default function Chatting() {
           const string = chatroomInfo
             .data()
             .members.filter(
-              (user) => user.uid !== currentUser?.uid
+              (user: IUser) => user.uid !== currentUser?.uid
             )[0].displayName;
           setRoomName(string);
         } else {
           setRoomName(chatroomInfo.data().chatRoomName);
         }
-      } else {
-        console.log("No data");
       }
     }
     getChatroomData();

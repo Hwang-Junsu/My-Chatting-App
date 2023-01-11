@@ -10,7 +10,7 @@ import { IModalProps } from "types/modal";
 export default function ChatRoomEditModal({ isOpen, setIsOpen }: IModalProps) {
   const [input, setInput] = useState<string>("");
   const router = useRouter();
-  const handleEdit = async (e) => {
+  const handleEdit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const chatroomRef = doc(db, "chatrooms", String(router.query.id));
