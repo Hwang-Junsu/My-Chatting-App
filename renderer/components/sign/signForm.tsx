@@ -7,15 +7,12 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useSetRecoilState } from "recoil";
-import userState from "../../atoms/user";
 import { auth, db } from "../../firebase";
 import { cls } from "../../utils/cls";
-import Button from "../button";
-import Input from "../input";
+import Button from "../common/button";
+import Input from "../common/input";
 
 export default function SignForm() {
-  const setUser = useSetRecoilState(userState);
   const [isRegister, setIsRegister] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -63,13 +60,8 @@ export default function SignForm() {
           await setDoc(doc(db, "users", email), {
             email: data.user.email,
             displayName: data.user.displayName,
+            stateMessage: "",
             uid: data.user.uid,
-          });
-          setUser({
-            email: data.user.email,
-            displayName: data.user.displayName,
-            uid: data.user.uid,
-            isLoggedIn: true,
           });
         }
       );
@@ -81,14 +73,7 @@ export default function SignForm() {
   };
   const signIn = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password).then((data) => {
-        setUser({
-          email: data.user.email,
-          displayName: data.user.displayName,
-          uid: data.user.uid,
-          isLoggedIn: true,
-        });
-      });
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       ipcRenderer.invoke("showError", "이메일과 패스워드를 확인해주세요.");
       return;
@@ -97,7 +82,11 @@ export default function SignForm() {
   };
   return (
     <>
-      <form className={cls(" max-w-lg flex flex-col space-y-2")}>
+      <form
+        className={cls(
+          " max-w-lg flex flex-col space-y-2 animate-fadeInWithUp"
+        )}
+      >
         <div>
           <Input
             type="text"
@@ -165,7 +154,7 @@ export default function SignForm() {
         />
       </form>
       <span
-        className="hover:scale-105 hover:text-blue-500"
+        className="hover:scale-105 hover:text-white animate-fadeInWithUp"
         onClick={() => setIsRegister((props) => !props)}
       >
         {isRegister ? "이미 계정이 있습니다." : "계정이 없으신가요?"}

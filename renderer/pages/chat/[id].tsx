@@ -1,21 +1,19 @@
-import { doc, DocumentData, getDoc } from "firebase/firestore";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Layout from "../../components/layout";
-import { db } from "../../firebase";
-import { useRecoilValue } from "recoil";
-import userState from "../../atoms/user";
-import ChatLog from "../../components/chat/chatLog";
-import ChatInput from "../../components/chat/chatInput";
-import { IUserState } from "../../types/user";
-import UserListModal from "../../components/chat/userListModal";
+import { useRouter } from "next/router";
+import { doc, DocumentData, getDoc } from "firebase/firestore";
+import { db } from "@firebase";
+import ChatLog from "@components/chat/chatLog";
+import ChatInput from "@components/chat/chatInput";
+import UserListModal from "@components/chat/userListModal";
+import Layout from "@components/common/layout";
+import useUser from "@hooks/useUser";
 
 export default function Chatting() {
   const [chatroom, setChatroom] = useState<DocumentData>();
   const [roomName, setRoomName] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const router = useRouter();
-  const currentUser = useRecoilValue<IUserState>(userState);
+  const [currentUser] = useUser();
   useEffect(() => {
     async function getChatroomData() {
       const docRef = doc(db, "chatrooms", String(router.query.id));
@@ -27,9 +25,9 @@ export default function Chatting() {
         if (chatroomInfo.data().type === "ONE") {
           const string = chatroomInfo
             .data()
-            .chatRoomName.split(",")
-            .filter((name) => name !== currentUser.displayName)
-            .join("");
+            .members.filter(
+              (user) => user.uid !== currentUser?.uid
+            )[0].displayName;
           setRoomName(string);
         } else {
           setRoomName(chatroomInfo.data().chatRoomName);
@@ -43,6 +41,7 @@ export default function Chatting() {
   return (
     <>
       <Layout
+        seoTitle={roomName}
         text={roomName}
         hasTabBar
         canGoBack

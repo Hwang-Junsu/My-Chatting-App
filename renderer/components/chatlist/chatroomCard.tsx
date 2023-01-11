@@ -1,6 +1,5 @@
-import { useRecoilValue } from "recoil";
-import userState from "../../atoms/user";
-import { IChatRoomCard } from "../../types/chat";
+import { IChatRoomCard } from "types/chat";
+import useUser from "@hooks/useUser";
 
 export default function ChatroomCard({
   chatRoomName,
@@ -10,7 +9,8 @@ export default function ChatroomCard({
   type,
   onClick,
 }: IChatRoomCard) {
-  const currentUser = useRecoilValue(userState);
+  const [currentUser] = useUser();
+
   return (
     <div
       onClick={onClick}
@@ -24,10 +24,8 @@ export default function ChatroomCard({
           <div className="flex justify-between space-x-1 truncate">
             <div className="truncate">
               {type === "ONE"
-                ? chatRoomName
-                    .split(",")
-                    .filter((name) => name !== currentUser.displayName)
-                    .join()
+                ? members.filter((user) => user.uid !== currentUser?.uid)[0]
+                    .displayName
                 : chatRoomName}
             </div>
             <div>
@@ -54,8 +52,10 @@ export default function ChatroomCard({
               )}
             </div>
           </div>
-          <div className="flex items-center text-[12px] justify-between text-gray-500">
-            <p>{lastMessage === "" ? "대화내용이 없습니다!" : lastMessage}</p>
+          <div className="flex items-center text-[12px] justify-between text-gray-500 truncate">
+            <p className="truncate">
+              {lastMessage === "" ? "대화내용이 없습니다!" : lastMessage}
+            </p>
             <p>{new Date(lastTimeStamp).toLocaleTimeString("ko-KR")}</p>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { cls } from "../utils/cls";
+import { cls } from "../../utils/cls";
 
 export default function Navbar() {
   const router = useRouter();

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import UserList from "../../components/user/userList";
-import Layout from "../../components/layout";
-import { auth, db } from "../../firebase";
+import { useRouter } from "next/router";
 import {
   collection,
   DocumentData,
@@ -10,38 +8,38 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { useRouter } from "next/router";
-import ChatroomCard from "../../components/chatlist/chatroomCard";
-import { onAuthStateChanged } from "firebase/auth";
+import UserList from "@components/user/userList";
+import { db } from "@firebase";
+import ChatroomCard from "@components/chatlist/chatroomCard";
+import Layout from "@components/common/layout";
+import useUser from "@hooks/useUser";
 
 export default function Chatting() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [chatroomList, setChatroomList] = useState<DocumentData[]>([]);
+  const [currentUser] = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const chatroomRef = query(
-          collection(db, "chatrooms"),
-          orderBy("lastTimeStamp", "desc"),
-          where("members", "array-contains", {
-            displayName: user.displayName,
-            email: user.email,
-            uid: user.uid,
-          })
+    if (currentUser) {
+      const chatroomRef = query(
+        collection(db, "chatrooms"),
+        orderBy("lastTimeStamp", "desc"),
+        where("memberIds", "array-contains", currentUser?.uid)
+      );
+      onSnapshot(chatroomRef, (querySnapshot) => {
+        setChatroomList(
+          querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }))
         );
-        onSnapshot(chatroomRef, (querySnapshot) => {
-          setChatroomList(
-            querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-          );
-        });
-      }
-    });
-  }, []);
+      });
+    }
+  }, [currentUser]);
   return (
     <>
-      <Layout text="Chat">
+      <Layout seoTitle="Chat" text="Chat">
         <div className="p-5 ">
           <section>
             <div className="mb-2 text-lg font-bold">Chat Rooms</div>

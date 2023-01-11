@@ -1,24 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import { auth as getAuth } from "../firebase";
-import Layout from "../components/layout";
 import { useRouter } from "next/router";
-import UserCard from "../components/user/userCard";
-import useUserList from "../hooks/useUserList";
 import { onAuthStateChanged } from "firebase/auth";
-import { useRecoilValue } from "recoil";
-import userState from "../atoms/user";
-
-const auth = getAuth;
+import { DocumentData, getDoc, doc } from "firebase/firestore";
+import { auth, db } from "@firebase";
+import useUserList from "@hooks/useUserList";
+import UserCard from "@components/user/userCard";
+import Layout from "@components/common/layout";
 
 export default function Home() {
-  const { userList, isLoading } = useUserList();
-  const currentUser = useRecoilValue(userState);
+  const { userList } = useUserList();
+  const [currentUser, setCurrentUser] = useState<DocumentData>();
   const router = useRouter();
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log(currentUser);
+        const userRef = doc(db, "users", user.email);
+        const snapshot = await getDoc(userRef);
+        if (snapshot.exists()) {
+          setCurrentUser(snapshot.data());
+        }
       } else {
         router.replace("/login");
       }
@@ -27,14 +28,11 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>My Chatting APP | Home</title>
-      </Head>
-      <Layout text="People">
+      <Layout seoTitle="People" text="People">
         <div className="h-screen p-5">
           <section className="mb-2 space-y-2 border-b-2">
             <div className="text-lg font-bold">My Profile</div>
-            <UserCard user={currentUser} />
+            <UserCard user={currentUser} type="READONLY" />
           </section>
           <section className="">
             <div className="text-lg font-bold">People</div>

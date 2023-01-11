@@ -1,5 +1,5 @@
-import { IRootModalProps } from "../types/modal";
-import { cls } from "../utils/cls";
+import { IRootModalProps } from "types/modal";
+import { cls } from "utils/cls";
 
 export default function Modal({
   isOpen,

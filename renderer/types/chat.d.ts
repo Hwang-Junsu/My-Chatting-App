@@ -4,13 +4,13 @@ import { Dispatch, SetStateAction } from "react";
 
 export interface IListItemProps {
   displayName?: string;
-  user?: IUser;
+  user?: DocumentData;
   isOpen?: boolean;
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
   profile?: string;
   isHost?: boolean;
   type?: "ADD" | "USER" | "READONLY";
-  handleAdd?: (user: IUser) => void;
+  handleAdd?: (user: DocumentData) => void;
   onClick?: () => void;
 }
 

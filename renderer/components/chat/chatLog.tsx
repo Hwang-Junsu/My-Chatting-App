@@ -1,4 +1,5 @@
-import { db } from "../../firebase";
+import { useEffect, useState } from "react";
+import { v4 as uuid } from "uuid";
 import {
   collection,
   DocumentData,
@@ -7,17 +8,15 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
-import { IUserState } from "../../types/user";
+import { db } from "@firebase";
 import Message from "./message";
-import { v4 as uuid } from "uuid";
-import { useEffect, useState } from "react";
 
 export default function ChatLog({
   chatroomId,
   currentUser,
 }: {
   chatroomId: string;
-  currentUser: IUserState;
+  currentUser: DocumentData;
 }) {
   const [messages, setMessages] = useState<DocumentData[]>([]);
 
@@ -51,7 +50,7 @@ export default function ChatLog({
             message={message.message}
             displayName={message.displayName}
             createdAt={message.createdAt}
-            isMine={currentUser.uid === message.uid}
+            isMine={currentUser?.uid === message.uid}
           />
         );
       })}

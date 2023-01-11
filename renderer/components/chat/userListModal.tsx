@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useRecoilValue } from "recoil";
-import userState from "../../atoms/user";
 import { IUserListModalProps } from "../../types/modal";
-import Modal from "../modal";
+import Modal from "../common/modal";
 import UserCard from "../user/userCard";
 import ChatRoomEditModal from "./editModal";
+import useUser from "@hooks/useUser";
 
 export default function UserListModal({
   isOpen,
@@ -12,7 +11,7 @@ export default function UserListModal({
   members,
   hostId,
 }: IUserListModalProps) {
-  const currentUser = useRecoilValue(userState);
+  const [currentUser] = useUser();
   const [editIsOpen, setEditIsOpen] = useState<boolean>();
 
   return (
@@ -21,7 +20,7 @@ export default function UserListModal({
         <div className="space-y-2">
           <div className="relative">
             <div className="font-bold text-center">현재 채팅방 유저</div>
-            {hostId === currentUser.uid ? (
+            {hostId === currentUser?.uid ? (
               <div
                 onClick={() => setEditIsOpen((props) => !props)}
                 className="absolute top-0 cursor-pointer right-3"

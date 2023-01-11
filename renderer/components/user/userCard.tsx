@@ -1,8 +1,8 @@
-import { onAuthStateChanged } from "firebase/auth";
+import useUser from "@hooks/useUser";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { auth, db } from "../../firebase";
+import { db } from "../../firebase";
 import { IListItemProps } from "../../types/chat";
 import { cls } from "../../utils/cls";
 
@@ -13,55 +13,49 @@ export default function UserCard({
   type = "USER",
 }: IListItemProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [currentUser] = useUser();
   const router = useRouter();
   const onClick = () => {
     setIsOpen((props) => !props);
   };
 
-  const handleChatting = () => {
-    onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        const chatroomRef = collection(db, "chatrooms");
-        const userData = {
-          uid: currentUser.uid,
-          displayName: currentUser.displayName,
-          email: currentUser.email,
-        };
+  const handleChatting = async () => {
+    if (currentUser) {
+      const chatroomRef = collection(db, "chatrooms");
+      const existChatroom = query(
+        chatroomRef,
+        where("members", "in", [[user.uid, currentUser?.uid]])
+      );
+      const chatroomArr = [];
+      const snapShot = await getDocs(existChatroom);
+      snapShot.forEach((data) =>
+        chatroomArr.push({ data: data.data(), id: data.id })
+      );
 
-        const existChatroom = query(
-          chatroomRef,
-          where("members", "in", [[user, userData]])
-        );
-        const chatroomArr = [];
-        const snapShot = await getDocs(existChatroom);
-        snapShot.forEach((data) =>
-          chatroomArr.push({ data: data.data(), id: data.id })
-        );
-
-        if (chatroomArr.length > 0) {
-          router.push(`/chat/${chatroomArr[0].id}`);
-          return;
-        }
-
-        const { id } = await addDoc(chatroomRef, {
-          chatRoomName: `${user.displayName},${currentUser.displayName}`,
-          members: [user, userData],
-          lastMessage: "",
-          lastTimeStamp: Date.now(),
-          type: "ONE",
-        });
-
-        const messagesRef = collection(db, `messages-${id}`);
-        await addDoc(messagesRef, {
-          message: "",
-          createdAt: "",
-          displayName: "",
-        });
-
-        router.replace(`/chat/${id}`);
-        console.log(`/chat/${id}`);
+      if (chatroomArr.length > 0) {
+        router.push(`/chat/${chatroomArr[0].id}`);
+        return;
       }
-    });
+
+      const { id } = await addDoc(chatroomRef, {
+        chatRoomName: `${user.displayName},${currentUser.displayName}`,
+        members: [user, currentUser],
+        memberIds: [user.uid, currentUser?.uid],
+        lastMessage: "",
+        lastTimeStamp: Date.now(),
+        type: "ONE",
+      });
+
+      const messagesRef = collection(db, `messages-${id}`);
+      await addDoc(messagesRef, {
+        message: "",
+        createdAt: "",
+        displayName: "",
+      });
+
+      router.replace(`/chat/${id}`);
+      console.log(`/chat/${id}`);
+    }
   };
   return (
     <div
@@ -76,7 +70,12 @@ export default function UserCard({
       >
         <div className="flex items-center space-x-2">
           <div className="w-10 h-10 bg-gray-400 rounded-full" />
-          <div>{user?.displayName}</div>
+          <div>
+            <div className="text-bold">{user?.displayName}</div>
+            <div className="text-[12px] text-gray-600">
+              {user?.stateMessage}
+            </div>
+          </div>
           {isHost ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"

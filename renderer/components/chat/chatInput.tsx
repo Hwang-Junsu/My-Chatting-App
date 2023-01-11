@@ -1,15 +1,20 @@
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  DocumentData,
+  updateDoc,
+} from "firebase/firestore";
 import { useState } from "react";
-import { db } from "../../firebase";
-import { IUserState } from "../../types/user";
-import Input from "../input";
+import { db } from "@firebase";
+import Input from "../common/input";
 
 export default function ChatInput({
   chatroomId,
   currentUser,
 }: {
   chatroomId: string;
-  currentUser: IUserState;
+  currentUser: DocumentData;
 }) {
   const [chatMessage, setChatMessage] = useState("");
   const handleSubmit = async (e) => {

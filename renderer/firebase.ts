@@ -1,24 +1,28 @@
 // Import the functions you need from the SDKs you need
-import {initializeApp} from "firebase/app";
-import {getAuth} from "firebase/auth";
-import {getFirestore} from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyA6DSTwG6CyJVDuzy0qHdbIR1tzi3ye-Dg",
-    authDomain: "chatting-app-fafa3.firebaseapp.com",
-    projectId: "chatting-app-fafa3",
-    storageBucket: "chatting-app-fafa3.appspot.com",
-    messagingSenderId: "1022605631075",
-    appId: "1:1022605631075:web:59413c4885bfd620c3a256",
-    measurementId: "G-6CF4ZG2H0D",
+  apiKey: process.env.NEXT_PUBLIC_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_API_ID,
+  measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+export default app;
+
+export const storage = getStorage(app);
 export const db = getFirestore(app);
 export const auth = getAuth(app);

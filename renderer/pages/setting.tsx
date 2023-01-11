@@ -1,11 +1,12 @@
-import React from "react";
-import Head from "next/head";
-import Layout from "../components/layout";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { auth } from "../firebase";
+import UserEditModal from "@components/user/userEditModal";
+import Layout from "@components/common/layout";
 
 export default function Setting() {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
   const logOut = () => {
     auth.signOut();
     router.replace("/login");
@@ -13,12 +14,15 @@ export default function Setting() {
 
   return (
     <>
-      <Layout text="Setting">
+      <Layout seoTitle="Setting" text="Setting">
         <div className="p-5">
-          <section className="space-y-2 border-b-2 mb-2">
-            <div className="font-bold text-lg">Setting</div>
+          <section className="mb-2 space-y-2 border-b-2">
+            <div className="text-lg font-bold">Setting</div>
             <div className="divide-y-2">
-              <div className="hover:cursor-pointer flex space-x-3 items-center p-3 hover:bg-blue-300">
+              <div
+                onClick={() => setIsOpen((props) => !props)}
+                className="flex items-center p-3 space-x-3 hover:cursor-pointer hover:bg-blue-300"
+              >
                 <div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +42,7 @@ export default function Setting() {
                 <div>프로필 수정</div>
               </div>
               <div
-                className="hover:cursor-pointer flex space-x-3 items-center p-3 hover:bg-blue-300"
+                className="flex items-center p-3 space-x-3 hover:cursor-pointer hover:bg-blue-300"
                 onClick={() => logOut()}
               >
                 <div>
@@ -63,6 +67,7 @@ export default function Setting() {
           </section>
         </div>
       </Layout>
+      {isOpen ? <UserEditModal isOpen={isOpen} setIsOpen={setIsOpen} /> : null}
     </>
   );
 }

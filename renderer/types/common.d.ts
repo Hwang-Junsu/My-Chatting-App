@@ -7,6 +7,7 @@ export interface IHeaderProps {
 
 export interface ILayoutProps extends IHeaderProps {
   children: React.ReactNode;
+  seoTitle: string;
   hasTabBar?: boolean;
 }
 

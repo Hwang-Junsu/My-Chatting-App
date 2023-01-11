@@ -1,11 +1,11 @@
-import { doc, updateDoc } from "firebase/firestore";
-import { useRouter } from "next/router";
 import { useState } from "react";
-import { db } from "../../firebase";
-import { IModalProps } from "../../types/modal";
-import Button from "../button";
-import Input from "../input";
-import Modal from "../modal";
+import { useRouter } from "next/router";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "@firebase";
+import Button from "../common/button";
+import Input from "../common/input";
+import Modal from "../common/modal";
+import { IModalProps } from "types/modal";
 
 export default function ChatRoomEditModal({ isOpen, setIsOpen }: IModalProps) {
   const [input, setInput] = useState<string>("");
