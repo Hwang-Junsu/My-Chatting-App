@@ -42,18 +42,19 @@ export default function ChatLog({
       id="chatting"
       className="h-[70vh] space-y-3 overflow-auto scrollbar-none pb-6"
     >
-      {messages.map((message) => {
-        if (message.message === "") return;
-        return (
-          <Message
-            key={uuid()}
-            message={message.message}
-            displayName={message.displayName}
-            createdAt={message.createdAt}
-            isMine={currentUser?.uid === message.uid}
-          />
-        );
-      })}
+      {currentUser &&
+        messages.map((message) => {
+          if (message.message === "") return;
+          return (
+            <Message
+              key={uuid()}
+              message={message.message}
+              displayName={message.displayName}
+              createdAt={message.createdAt}
+              isMine={currentUser.uid === message.uid}
+            />
+          );
+        })}
     </section>
   );
 }

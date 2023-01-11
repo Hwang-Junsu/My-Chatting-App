@@ -5,6 +5,6 @@ export interface IInputProps {
   type: string;
   placeholder: string;
   maxLength?: number;
-  value: InputValue;
+  value?: InputValue;
   onChange: (ev: InputChangeEvent) => void;
 }

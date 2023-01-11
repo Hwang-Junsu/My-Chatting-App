@@ -54,7 +54,6 @@ export default function UserCard({
       });
 
       router.replace(`/chat/${id}`);
-      console.log(`/chat/${id}`);
     }
   };
   return (
@@ -81,7 +80,7 @@ export default function UserCard({
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
               className="w-6 h-6"
             >
@@ -120,7 +119,7 @@ export default function UserCard({
                 onClick={handleChatting}
                 className="absolute cursor-pointer right-2 bottom-5"
               >
-                <div className="w-20 h-6 text-sm text-center bg-blue-200 rounded-md">
+                <div className="flex items-center justify-center w-20 h-6 text-sm bg-blue-400 rounded-md">
                   1:1 채팅하기
                 </div>
               </div>

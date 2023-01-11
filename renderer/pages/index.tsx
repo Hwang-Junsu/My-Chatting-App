@@ -1,30 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { onAuthStateChanged } from "firebase/auth";
-import { DocumentData, getDoc, doc } from "firebase/firestore";
-import { auth, db } from "@firebase";
+import React from "react";
 import useUserList from "@hooks/useUserList";
 import UserCard from "@components/user/userCard";
 import Layout from "@components/common/layout";
+import useUser from "@hooks/useUser";
 
 export default function Home() {
   const { userList } = useUserList();
-  const [currentUser, setCurrentUser] = useState<DocumentData>();
-  const router = useRouter();
-  useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userRef = doc(db, "users", user.email);
-        const snapshot = await getDoc(userRef);
-        if (snapshot.exists()) {
-          setCurrentUser(snapshot.data());
-        }
-      } else {
-        router.replace("/login");
-      }
-    });
-  }, []);
+  const [currentUser] = useUser();
 
   return (
     <>

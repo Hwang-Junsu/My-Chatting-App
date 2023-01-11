@@ -5,9 +5,8 @@ import {
   DocumentData,
   updateDoc,
 } from "firebase/firestore";
-import { useState } from "react";
+import { useRef } from "react";
 import { db } from "@firebase";
-import Input from "../common/input";
 
 export default function ChatInput({
   chatroomId,
@@ -16,25 +15,35 @@ export default function ChatInput({
   chatroomId: string;
   currentUser: DocumentData;
 }) {
-  const [chatMessage, setChatMessage] = useState("");
+  // const [chatMessage, setChatMessage] = useState("");
+  const chatMessage = useRef<string>("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: React.MutableRefObject<string>
+  ) => {
+    const value = e.target.value;
+    type.current = value;
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     await addDoc(collection(db, `messages-${chatroomId}`), {
       displayName: currentUser.displayName,
       uid: currentUser.uid,
-      message: chatMessage,
+      message: chatMessage.current,
       createdAt: Date.now(),
     });
     await updateDoc(doc(db, "chatrooms", chatroomId), {
-      lastMessage: chatMessage,
+      lastMessage: chatMessage.current,
       lastTimeStamp: Date.now(),
     });
-    setChatMessage("");
     const chatting = document.getElementById("chatting");
     setTimeout(() => {
       chatting.scrollTop = chatting.scrollHeight;
     }, 300);
+    chatMessage.current = "";
+    inputRef.current.value = "";
   };
 
   return (
@@ -43,11 +52,14 @@ export default function ChatInput({
         className="flex items-center w-full p-3 space-x-2 bg-white"
         onSubmit={handleSubmit}
       >
-        <Input
+        <input
+          ref={inputRef}
           type="text"
           placeholder="메시지를 입력하세요."
-          value={chatMessage}
-          onChange={(e) => setChatMessage(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onChange(e, chatMessage)
+          }
+          className="w-full px-3 py-2 placeholder-gray-400 bg-white border border-gray-500 rounded-md shadow-lg appearance-none outline-blue-500 focus:outline-2 focus:ring-blue-500 focus:border-blue-500"
         />
         <div>
           <button className="p-2 bg-blue-400 rounded-md whitespace-nowrap">

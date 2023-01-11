@@ -34,9 +34,7 @@ export default function Header({
             {text}
           </p>
         </div>
-        {headerText ? (
-          <p className="text-sm tracking-tighter whitespace-nowrap " />
-        ) : (
+        {headerText ? null : (
           <div className="cursor-pointer" onClick={onClick}>
             <svg
               xmlns="http://www.w3.org/2000/svg"

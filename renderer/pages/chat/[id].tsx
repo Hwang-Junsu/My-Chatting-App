@@ -45,7 +45,7 @@ export default function Chatting() {
         text={roomName}
         hasTabBar
         canGoBack
-        headerText={chatroom?.type === "ONE" ? true : false}
+        headerText={chatroom && chatroom.type === "ONE" ? true : false}
         onClick={() => setIsOpen((props) => !props)}
       >
         <div className="p-5 overflow-auto pb-28 scrollbar-none">
