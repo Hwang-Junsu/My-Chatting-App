@@ -11,8 +11,7 @@
 ## 로그인 페이지
 
 <p align="center">
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.
-kakaocdn.net%2Fdn%2FdboeDY%2FbtrV1hSibQT%2F8692jgGaqr1RVJbfPr4xaK%2Fimg.png" width="200px">
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdboeDY%2FbtrV1hSibQT%2F8692jgGaqr1RVJbfPr4xaK%2Fimg.png" width="200px">
 <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FkSaIS%2FbtrV1VamXYo%2FKH3Ba336O6KKfxrCJpkyZ0%2Fimg.png" width="200px">
 </p>
 
@@ -60,10 +59,4 @@ kakaocdn.net%2Fdn%2FdboeDY%2FbtrV1hSibQT%2F8692jgGaqr1RVJbfPr4xaK%2Fimg.png" wid
 
 ## Stack
 
-<img src="https://img.shields.io/badge/nextron-000000?style=for-the-badge&logo=next.js&logoColor=white">
-<img src="https://img.shields.io/badge/nextjs-000000?style=for-the-badge&logo=next.js&logoColor=white">
-<img src="https://img.shields.io/badge/electron-47848F?style=for-the-badge&logo=electron&logoColor=white">
-<img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=black">
-<img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white">
-<img src="https://img.shields.io/badge/tailwindcss-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+<img src="https://img.shields.io/badge/nextron-000000?style=for-the-badge&logo=next.js&logoColor=white"><img src="https://img.shields.io/badge/nextjs-000000?style=for-the-badge&logo=next.js&logoColor=white"><img src="https://img.shields.io/badge/electron-47848F?style=for-the-badge&logo=electron&logoColor=white"><img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=black"><img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white"><img src="https://img.shields.io/badge/tailwindcss-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white"><img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
