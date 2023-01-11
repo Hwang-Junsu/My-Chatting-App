@@ -16,7 +16,7 @@ export default function Layout({
   return (
     <div className="">
       <Head>
-        <title>{seoTitle} | My Chatting App</title>
+        <title>{`${seoTitle} | My Chatting App`}</title>
       </Head>
       {hasTabBar ? (
         <Header

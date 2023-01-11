@@ -38,10 +38,7 @@ export default function ChatInput({
       lastMessage: chatMessage.current,
       lastTimeStamp: Date.now(),
     });
-    const chatting = document.getElementById("chatting");
-    setTimeout(() => {
-      chatting.scrollTop = chatting.scrollHeight;
-    }, 300);
+
     chatMessage.current = "";
     inputRef.current.value = "";
   };
