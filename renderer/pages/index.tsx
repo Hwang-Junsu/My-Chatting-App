@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import useUserList from "@hooks/useUserList";
 import UserCard from "@components/user/userCard";
 import Layout from "@components/common/layout";
-import useUser from "@hooks/useUser";
+import { UserContext } from "context/userContext";
 
 export default function Home() {
   const { userList } = useUserList();
-  const [currentUser] = useUser();
+  const currentUser = useContext(UserContext);
 
   return (
     <>

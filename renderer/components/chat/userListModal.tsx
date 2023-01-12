@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { IUserListModalProps } from "../../types/modal";
 import Modal from "../common/modal";
 import UserCard from "../user/userCard";
 import ChatRoomEditModal from "./editModal";
-import useUser from "@hooks/useUser";
+import { UserContext } from "context/userContext";
 
 export default function UserListModal({
   isOpen,
@@ -11,7 +11,7 @@ export default function UserListModal({
   members,
   hostId,
 }: IUserListModalProps) {
-  const [currentUser] = useUser();
+  const currentUser = useContext(UserContext);
   const [editIsOpen, setEditIsOpen] = useState<boolean>();
 
   return (

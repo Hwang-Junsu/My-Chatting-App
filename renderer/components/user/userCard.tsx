@@ -1,7 +1,7 @@
-import useUser from "@hooks/useUser";
+import { UserContext } from "context/userContext";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { db } from "../../firebase";
 import { IListItemProps } from "../../types/chat";
 import { cls } from "../../utils/cls";
@@ -13,7 +13,7 @@ export default function UserCard({
   type = "USER",
 }: IListItemProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [currentUser] = useUser();
+  const currentUser = useContext(UserContext);
   const router = useRouter();
   const onClick = () => {
     setIsOpen((props) => !props);
@@ -24,7 +24,7 @@ export default function UserCard({
       const chatroomRef = collection(db, "chatrooms");
       const existChatroom = query(
         chatroomRef,
-        where("members", "in", [[user.uid, currentUser?.uid]])
+        where("memberIds", "in", [[user.uid, currentUser?.uid]])
       );
       const chatroomArr = [];
       const snapShot = await getDocs(existChatroom);

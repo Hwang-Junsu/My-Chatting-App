@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import {
   collection,
@@ -12,12 +12,12 @@ import UserList from "@components/user/userList";
 import { db } from "@firebase";
 import ChatroomCard from "@components/chatlist/chatroomCard";
 import Layout from "@components/common/layout";
-import useUser from "@hooks/useUser";
+import { UserContext } from "context/userContext";
 
 export default function Chatting() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [chatroomList, setChatroomList] = useState<DocumentData[]>([]);
-  const [currentUser] = useUser();
+  const currentUser = useContext(UserContext);
   const router = useRouter();
 
   useEffect(() => {

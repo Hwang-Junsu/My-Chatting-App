@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { v4 as uuid } from "uuid";
 import UserCard from "./userCard";
 import useUserList from "@hooks/useUserList";
@@ -9,12 +9,12 @@ import { IUser } from "types/user";
 import { useRouter } from "next/router";
 import Modal from "../common/modal";
 import { IModalProps } from "types/modal";
-import useUser from "@hooks/useUser";
+import { UserContext } from "context/userContext";
 
 export default function UserList({ isOpen, setIsOpen }: IModalProps) {
   const { userList } = useUserList();
   const router = useRouter();
-  const [currentUser] = useUser();
+  const currentUser = useContext(UserContext);
   const [addList, setAddList] = useState<IUser[]>([]);
   const handleDelete = (selectedUser) => {
     setAddList((props) =>
@@ -30,11 +30,13 @@ export default function UserList({ isOpen, setIsOpen }: IModalProps) {
 
     if (currentUser) {
       const chatroomRef = collection(db, "chatrooms");
+      const userIdArray = [
+        ...addList.map((user) => user.uid),
+        currentUser?.uid,
+      ];
       const existChatroom = query(
         chatroomRef,
-        where("members", "in", [
-          [...addList.map((user) => user.uid), currentUser?.uid],
-        ])
+        where("memberIds", "in", [userIdArray])
       );
       const chatroomArr = [];
       const snapShot = await getDocs(existChatroom);

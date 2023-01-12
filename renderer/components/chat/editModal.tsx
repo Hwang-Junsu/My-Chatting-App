@@ -8,14 +8,14 @@ import Modal from "../common/modal";
 import { IModalProps } from "types/modal";
 
 export default function ChatRoomEditModal({ isOpen, setIsOpen }: IModalProps) {
-  const [input, setInput] = useState<string>("");
   const router = useRouter();
-  const handleEdit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const chatRoomName = e.target[0].value;
 
     const chatroomRef = doc(db, "chatrooms", String(router.query.id));
     await updateDoc(chatroomRef, {
-      chatRoomName: input,
+      chatRoomName,
     });
     setIsOpen((props: boolean) => !props);
   };
@@ -24,12 +24,7 @@ export default function ChatRoomEditModal({ isOpen, setIsOpen }: IModalProps) {
       <div className="space-y-2">
         <div className="font-bold text-center">채팅방 이름 수정하기</div>
         <form className="space-y-2" onSubmit={handleEdit}>
-          <Input
-            type="text"
-            placeholder="채팅방 이름을 수정하세요."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
+          <Input type="text" placeholder="채팅방 이름을 수정하세요." />
           <Button type="submit" text="수정하기" />
         </form>
       </div>
