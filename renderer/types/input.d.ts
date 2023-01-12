@@ -6,5 +6,5 @@ export interface IInputProps {
   placeholder: string;
   maxLength?: number;
   value?: InputValue;
-  onChange: (ev: InputChangeEvent) => void;
+  onChange?: (ev: InputChangeEvent) => void;
 }
