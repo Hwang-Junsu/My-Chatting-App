@@ -1,3 +1,4 @@
+import React, { useState, useRef, useCallback } from "react";
 import { ipcRenderer } from "electron";
 import {
   createUserWithEmailAndPassword,
@@ -6,7 +7,6 @@ import {
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { auth, db } from "../../firebase";
 import { cls } from "../../utils/cls";
 import Button from "../common/button";
@@ -14,69 +14,106 @@ import Input from "../common/input";
 
 export default function SignForm() {
   const [isRegister, setIsRegister] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [password2, setPassword2] = useState<string>("");
-  const [nickname, setNickname] = useState<string>("");
-
   const router = useRouter();
 
+  const passwordRef = useRef<HTMLInputElement>(null);
   // Valid Check
-  const [checkEmail, setCheckEmail] = useState<boolean>(null);
-  const [checkPassword, setCheckPassword] = useState<boolean>(null);
-  const [equalPassword, setEqualPassword] = useState<boolean>(null);
-  const [checkNickname, setcheckNickname] = useState<boolean>(null);
+  const [checkEmail, setCheckEmail] = useState<boolean>(false);
+  const [checkPassword, setCheckPassword] = useState<boolean>(false);
+  const [equalPassword, setEqualPassword] = useState<boolean>(false);
+  const [checkDisplayName, setCheckDisplayName] = useState<boolean>(false);
 
-  // Email Confirm
-  useEffect(() => {
-    const emailRegex =
-      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
-    emailRegex.test(email) ? setCheckEmail(true) : setCheckEmail(false);
-  }, [email]);
-
-  // PW Confirm
-  useEffect(() => {
-    password.length < 8 ? setCheckPassword(false) : setCheckPassword(true);
-    password2 === password ? setEqualPassword(true) : setEqualPassword(false);
-  }, [password, password2]);
-
-  // Nickname Confirom
-  useEffect(() => {
-    if (nickname.length === 0) setcheckNickname(false);
-    nickname.length > 8 ? setcheckNickname(false) : setcheckNickname(true);
-  }, [nickname]);
-
-  const signup = async () => {
-    if (!checkEmail || !checkPassword || !checkNickname || !equalPassword) {
-      ipcRenderer.invoke("showError", "회원가입 형식을 확인해주세요.");
-      return;
-    }
-    try {
-      await createUserWithEmailAndPassword(auth, email, password).then(
-        async (data) => {
-          await updateProfile(auth.currentUser, {
-            displayName: nickname,
-          });
-          await setDoc(doc(db, "users", email), {
-            email: data.user.email,
-            displayName: data.user.displayName,
-            stateMessage: "",
-            uid: data.user.uid,
-          });
-        }
-      );
-    } catch (error) {
-      ipcRenderer.invoke("showError", "동일한 이메일이 존재합니다.");
-      return;
-    }
-    router.push("/");
+  const onRegister = () => {
+    setIsRegister((props) => !props);
+    setCheckDisplayName(false);
+    setEqualPassword(false);
   };
-  const signIn = async () => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      ipcRenderer.invoke("showError", "이메일과 패스워드를 확인해주세요.");
-      return;
+
+  const onChangeEmail = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const emailRegex =
+        /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+      const currentEmail = e.target.value;
+      if (!emailRegex.test(currentEmail)) setCheckEmail(false);
+      else setCheckEmail(true);
+    },
+    []
+  );
+  const onChangePassword = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const passwordRegex = /.{8,}/g;
+      const currentPassword = e.target.value;
+      if (!passwordRegex.test(currentPassword)) setCheckPassword(false);
+      else setCheckPassword(true);
+    },
+    []
+  );
+  const onChangePasswordCheck = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const currentPasswordCheck = e.target.value;
+      if (String(passwordRef.current.value) !== String(currentPasswordCheck))
+        setEqualPassword(false);
+      else setEqualPassword(true);
+    },
+    []
+  );
+  const onChangeDisplayName = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const displayNameRegex = /.{1,8}/g;
+      const currentDisplayName = e.target.value;
+      if (!displayNameRegex.test(currentDisplayName))
+        setCheckDisplayName(false);
+      else setCheckDisplayName(true);
+    },
+    []
+  );
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const email = event.target[0].value;
+    const password = event.target[1].value;
+
+    if (isRegister) {
+      if (
+        !checkEmail ||
+        !checkPassword ||
+        !checkDisplayName ||
+        !equalPassword
+      ) {
+        ipcRenderer.invoke("showError", "입력형식을 확인해주세요.");
+        return;
+      }
+      const displayName = event.target[3].value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, password).then(
+          async (data) => {
+            await updateProfile(auth.currentUser, {
+              displayName,
+            });
+            await setDoc(doc(db, "users", email), {
+              email: data.user.email,
+              displayName: data.user.displayName,
+              stateMessage: "",
+              uid: data.user.uid,
+            });
+          }
+        );
+      } catch (error) {
+        if (String(error.code) === "auth/email-already-in-use") {
+          ipcRenderer.invoke("showError", "동일한 이메일이 존재합니다.");
+          return;
+        } else {
+          ipcRenderer.invoke("showError", "서버 에러입니다.");
+          return;
+        }
+      }
+    } else {
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        ipcRenderer.invoke("showError", "이메일과 패스워드를 확인해주세요.");
+        return;
+      }
     }
     router.push("/");
   };
@@ -86,16 +123,16 @@ export default function SignForm() {
         className={cls(
           " max-w-lg flex flex-col space-y-2 animate-fadeInWithUp"
         )}
+        onSubmit={handleSubmit}
       >
         <div>
-          <Input
-            type="text"
-            placeholder="이메일"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <Input type="text" placeholder="이메일" onChange={onChangeEmail} />
           {isRegister ? (
-            checkEmail ? null : (
+            checkEmail ? (
+              <p className="text-[12px] text-center text-green-700">
+                올바른 이메일 형식입니다.
+              </p>
+            ) : (
               <p className="text-[12px] text-center text-red-500">
                 이메일 형식이 올바르지 않습니다.
               </p>
@@ -106,11 +143,15 @@ export default function SignForm() {
           <Input
             type="password"
             placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={onChangePassword}
+            ref={passwordRef}
           />
           {isRegister ? (
-            checkEmail ? null : (
+            checkPassword ? (
+              <p className="text-[12px] text-center text-green-700">
+                올바른 비밀번호 형식입니다.
+              </p>
+            ) : (
               <p className="text-[12px] text-center text-red-500">
                 8자리 이상의 비밀번호를 설정해주세요.
               </p>
@@ -122,10 +163,13 @@ export default function SignForm() {
             <Input
               type="password"
               placeholder="비밀번호 확인"
-              value={password2}
-              onChange={(e) => setPassword2(e.target.value)}
+              onChange={onChangePasswordCheck}
             />
-            {equalPassword ? null : (
+            {equalPassword ? (
+              <p className="text-[12px] text-center text-green-700">
+                비밀번호가 일치합니다.
+              </p>
+            ) : (
               <p className="text-[12px] text-center text-red-500">
                 비밀번호가 일치하지 않습니다.
               </p>
@@ -138,24 +182,24 @@ export default function SignForm() {
               type="text"
               placeholder="닉네임(8자 이내)"
               maxLength={8}
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
+              onChange={onChangeDisplayName}
             />
-            {checkNickname ? null : (
+            {checkDisplayName ? (
+              <p className="text-[12px] text-center text-green-700">
+                올바른 닉네임 형식입니다.
+              </p>
+            ) : (
               <p className="text-[12px] text-center text-red-500">
                 8자 이내의 닉네임을 작성해주세요.
               </p>
             )}
           </div>
         ) : null}
-        <Button
-          text={isRegister ? "회원가입" : "로그인"}
-          onClick={isRegister ? signup : signIn}
-        />
+        <Button type="submit" text={isRegister ? "회원가입" : "로그인"} />
       </form>
       <span
         className="hover:scale-105 hover:text-white animate-fadeInWithUp"
-        onClick={() => setIsRegister((props) => !props)}
+        onClick={onRegister}
       >
         {isRegister ? "이미 계정이 있습니다." : "계정이 없으신가요?"}
       </span>
