@@ -10,30 +10,28 @@ import Input from "../common/input";
 export default function UserEditModal({ isOpen, setIsOpen }: IModalProps) {
   const handleEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const displayNameRegex = /.{1,8}/g;
-    const stateMessageRegex = /.{,20}/g;
-
     const displayName = e.target[0].value;
     const stateMessage = e.target[1].value;
-
-    if (
-      !displayNameRegex.test(displayName) ||
-      !stateMessageRegex.test(stateMessage)
-    ) {
+    if (displayName.length > 8 || displayName.length === 0) {
+      ipcRenderer.invoke("showError", "닉네임은 8자 이내로 작성해주세요.");
+      return;
+    }
+    if (stateMessage.length > 20 || stateMessage.length === 0) {
       ipcRenderer.invoke(
         "showError",
-        "닉네임은 8자이내, 상태 메시지는 20자 이내로 작성해주세요."
+        "상태 메시지는 20자 이내로 작성해주세요."
       );
       return;
     }
 
     onAuthStateChanged(auth, async (user) => {
-      const userRef = doc(db, "users", user.email);
-      await updateDoc(userRef, {
-        stateMessage,
-        displayName,
-      });
+      if (user) {
+        const userRef = doc(db, "users", user?.uid);
+        await updateDoc(userRef, {
+          stateMessage,
+          displayName,
+        });
+      }
     });
 
     ipcRenderer.invoke("showDialog", "프로필이 수정되었습니다.");
