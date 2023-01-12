@@ -115,9 +115,7 @@ export default function SignForm() {
         return;
       }
     }
-    setTimeout(() => {
-      router.push("/");
-    }, 1000);
+    router.push("/");
   };
   return (
     <>

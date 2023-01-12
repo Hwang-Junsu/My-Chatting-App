@@ -5,6 +5,7 @@ import { useState } from "react";
 import { db } from "../../firebase";
 import { IListItemProps } from "../../types/chat";
 import { cls } from "../../utils/cls";
+import ProfileImage from "./profileImage";
 
 export default function UserCard({
   user,
@@ -68,7 +69,7 @@ export default function UserCard({
         className="flex items-center justify-between w-full p-3 space-x-3 hover:cursor-pointer hover:bg-blue-200"
       >
         <div className="flex items-center space-x-2">
-          <div className="w-10 h-10 bg-gray-400 rounded-full" />
+          <ProfileImage />
           <div>
             <div className="text-bold">{user?.displayName}</div>
             <div className="text-[12px] text-gray-600">

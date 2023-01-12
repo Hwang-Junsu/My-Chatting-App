@@ -1,5 +1,6 @@
 import { IChatRoomCard } from "types/chat";
 import useUser from "@hooks/useUser";
+import ChatroomImage from "./chatroomImage";
 
 export default function ChatroomCard({
   chatRoomName,
@@ -18,7 +19,7 @@ export default function ChatroomCard({
     >
       <div className="flex items-center w-full space-x-2 truncate">
         <div>
-          <div className="w-10 h-10 bg-gray-400 rounded-full" />
+          <ChatroomImage />
         </div>
         <div className="w-full truncate">
           <div className="flex justify-between space-x-1 truncate">
