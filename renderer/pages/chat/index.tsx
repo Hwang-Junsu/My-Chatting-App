@@ -12,12 +12,12 @@ import UserList from "@components/user/userList";
 import { db } from "@firebase";
 import ChatroomCard from "@components/chatlist/chatroomCard";
 import Layout from "@components/common/layout";
-import { UserContext } from "context/userContext";
+import useUser from "@hooks/useUser";
 
 export default function Chatting() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [chatroomList, setChatroomList] = useState<DocumentData[]>([]);
-  const currentUser = useContext(UserContext);
+  const [currentUser] = useUser();
   const router = useRouter();
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function Chatting() {
       const chatroomRef = query(
         collection(db, "chatrooms"),
         orderBy("lastTimeStamp", "desc"),
-        where("memberIds", "array-contains", currentUser?.uid)
+        where("memberIds", "array-contains", currentUser.uid)
       );
       onSnapshot(chatroomRef, (querySnapshot) => {
         setChatroomList(

@@ -1,6 +1,5 @@
-import { useContext } from "react";
 import { IChatRoomCard } from "types/chat";
-import { UserContext } from "context/userContext";
+import useUser from "@hooks/useUser";
 
 export default function ChatroomCard({
   chatRoomName,
@@ -10,7 +9,7 @@ export default function ChatroomCard({
   type,
   onClick,
 }: IChatRoomCard) {
-  const currentUser = useContext(UserContext);
+  const [currentUser] = useUser();
 
   return (
     <div

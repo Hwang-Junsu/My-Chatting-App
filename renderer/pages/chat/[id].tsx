@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { doc, DocumentData, getDoc } from "firebase/firestore";
 import { db } from "@firebase";
@@ -7,14 +7,14 @@ import ChatInput from "@components/chat/chatInput";
 import UserListModal from "@components/chat/userListModal";
 import Layout from "@components/common/layout";
 import { IUser } from "types/user";
-import { UserContext } from "context/userContext";
+import useUser from "@hooks/useUser";
 
 export default function Chatting() {
   const [chatroom, setChatroom] = useState<DocumentData>();
   const [roomName, setRoomName] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const router = useRouter();
-  const currentUser = useContext(UserContext);
+  const [currentUser] = useUser();
   useEffect(() => {
     async function getChatroomData() {
       const docRef = doc(db, "chatrooms", String(router.query.id));

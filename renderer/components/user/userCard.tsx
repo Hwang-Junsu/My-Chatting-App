@@ -1,7 +1,7 @@
-import { UserContext } from "context/userContext";
+import useUser from "@hooks/useUser";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { db } from "../../firebase";
 import { IListItemProps } from "../../types/chat";
 import { cls } from "../../utils/cls";
@@ -13,7 +13,7 @@ export default function UserCard({
   type = "USER",
 }: IListItemProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const currentUser = useContext(UserContext);
+  const [currentUser] = useUser();
   const router = useRouter();
   const onClick = () => {
     setIsOpen((props) => !props);

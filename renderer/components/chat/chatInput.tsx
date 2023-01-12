@@ -29,8 +29,8 @@ export default function ChatInput({
     e.preventDefault();
 
     await addDoc(collection(db, `messages-${chatroomId}`), {
-      displayName: currentUser.displayName,
-      uid: currentUser.uid,
+      displayName: currentUser?.displayName,
+      uid: currentUser?.uid,
       message: chatMessage.current,
       createdAt: Date.now(),
     });

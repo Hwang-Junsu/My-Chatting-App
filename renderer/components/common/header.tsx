@@ -13,7 +13,10 @@ export default function Header({
       <div className="flex items-center justify-between h-full px-5">
         <div className="flex w-4/5">
           {canGoBack ? (
-            <span className="mr-2 cursor-pointer" onClick={() => router.back()}>
+            <span
+              className="mr-2 cursor-pointer"
+              onClick={() => router.push("/chat")}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

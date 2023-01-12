@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { v4 as uuid } from "uuid";
 import UserCard from "./userCard";
 import useUserList from "@hooks/useUserList";
@@ -9,12 +9,12 @@ import { IUser } from "types/user";
 import { useRouter } from "next/router";
 import Modal from "../common/modal";
 import { IModalProps } from "types/modal";
-import { UserContext } from "context/userContext";
+import useUser from "@hooks/useUser";
 
 export default function UserList({ isOpen, setIsOpen }: IModalProps) {
   const { userList } = useUserList();
   const router = useRouter();
-  const currentUser = useContext(UserContext);
+  const [currentUser] = useUser();
   const [addList, setAddList] = useState<IUser[]>([]);
   const handleDelete = (selectedUser) => {
     setAddList((props) =>
@@ -30,10 +30,7 @@ export default function UserList({ isOpen, setIsOpen }: IModalProps) {
 
     if (currentUser) {
       const chatroomRef = collection(db, "chatrooms");
-      const userIdArray = [
-        ...addList.map((user) => user.uid),
-        currentUser?.uid,
-      ];
+      const userIdArray = [...addList.map((user) => user.uid), currentUser.uid];
       const existChatroom = query(
         chatroomRef,
         where("memberIds", "in", [userIdArray])
@@ -108,7 +105,7 @@ export default function UserList({ isOpen, setIsOpen }: IModalProps) {
         </ul>
         <section className="h-[400px] pb-2 overflow-scroll border-t-2 divide-y-2 scrollbar-none">
           {userList.map((user) => {
-            if (currentUser.uid === user.uid) return;
+            if (currentUser?.uid === user.uid) return;
             return (
               <UserCard
                 key={user.uid}

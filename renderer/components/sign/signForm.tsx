@@ -90,7 +90,7 @@ export default function SignForm() {
             await updateProfile(auth.currentUser, {
               displayName,
             });
-            await setDoc(doc(db, "users", email), {
+            await setDoc(doc(db, "users", data.user.uid), {
               email: data.user.email,
               displayName: data.user.displayName,
               stateMessage: "",
@@ -115,7 +115,9 @@ export default function SignForm() {
         return;
       }
     }
-    router.push("/");
+    setTimeout(() => {
+      router.push("/");
+    }, 1000);
   };
   return (
     <>
